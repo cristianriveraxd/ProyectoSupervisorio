@@ -1,0 +1,72 @@
+//CREAR USUARIO EN SQLSERVER
+//Security>Login>NewUser>SQLSERVERAUTENTICATION>ServerRoles=public>UserMapping=Manejodebasededatos.
+//Securables
+
+
+//PARA INSTALAR (REFERENCIAR) LAS EXTENSIONES DE DRIVERS, ES NECESARIO HACERLO DESDE XAMPP 
+//DetenerServidor>CONFIG>php.ini>buscarPDO>y pegar el nombre de las extensiones con el tipo de documento y extension=.
+
+
+>> amplio soporte a bases de datos, puede utilizarse en todo tipo de plataformas y está cubierto por una licencia PHP especial que permite 
+su libre utilización y modificación del código fuente, una combinación más que convincente.
+
+>>Script:Un script es un programa informático en general de pequeñas dimensiones que no se compila en código binario previamente, 
+los scripts se escriben en un lenguaje de programación como PHP, Perl o JavaScript y son ejecutados por un intérprete en el servidor 
+web (del lado del servidor) o por un motor de renderizado en el navegador web (del lado del cliente).
+
+>>las funciones son subprogramas que permiten externalizar partes del código de programa. Para evitar la redundancia, 
+se definen las tareas recurrentes como funciones y se hace un llamamiento a las mismas con ayuda de un nombre de función. 
+Los desarrolladores utilizan para ello funciones de PHP predefinidas o crean sus propios subprogramas.
+
+EJECUCIÓN DE PHP:
+Al introducir el URL http:// localhost/ test.php se está indicando al navegador web que solicite el archivo test.php al servidor web. 
+El servidor Apache HTTP u otro software de servidor web abre el archivo en el directorio correspondiente. 
+La terminación .php informa de que el archivo contiene código PHP. Ahora se pone en marcha el intérprete de PHP integrado en el servidor web, 
+el cual hace un recorrido por el documento hasta dar con la etiqueta PHP de apertura <?php, la cual señala el comienzo del código PHP. 
+Tras ello,el intérprete ya tiene la capacidad de ejecutar el código PHP y de generar una salida en HTML que se envía al navegador desde el servidor web. 
+
+
+datos
+En el ámbito de la programación, los strings están considerados como tipos de datos independientes y guardan diferencias con otros tipos de datos 
+como los integers (números enteros) o los floats (números de punto flotante).
+
+Variables
+La palabra reservada echo resulta de una utilidad mayor que la propia emisión de texto, la cual puede implementarse también sin PHP y tomando HTML como base.
+ La verdadera plusvalía de echo está basada en el hecho de que la instrucción permite generar textos de manera dinámica con ayuda de variables.
+
+FETCH_ASSOC
+Cuando se ejecuta la función fetchAll(PDO::FETCH_ASSOC) en la línea de código $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);, 
+PDO devuelve un arreglo asociativo que contiene los resultados de la consulta SQL.
+
+Un arreglo asociativo es un tipo de arreglo en PHP donde se pueden utilizar claves de texto para acceder a los valores almacenados en el arreglo. 
+Es decir, en lugar de acceder a un valor mediante un índice numérico, como en un arreglo normal, en un arreglo asociativo se utiliza un texto como 
+clave para acceder a su valor correspondiente.
+
+En este caso, la consulta SQL devuelve una serie de filas, donde cada fila representa un registro de la tabla CONFIGURACION_LINEA con la información 
+de la columna codigo de la tabla RopProductos. Cuando utilizamos PDO::FETCH_ASSOC, PDO devuelve un arreglo donde las claves del arreglo asociativo son 
+los nombres de las columnas de la tabla CONFIGURACION_LINEA y la columna codigo de la tabla RopProductos.
+
+Para imprimir el arreglo asociativo $resultado, puedes utilizar un ciclo foreach para iterar por cada registro en el arreglo y mostrar la información que deseas. 
+Por ejemplo, puedes imprimir los valores de cada registro de la siguiente manera:
+
+SELF::
+La razón por la que se utiliza self::$conn en lugar de $conn es porque $conn es una variable local de la función conexionBD(),
+ por lo que no está disponible en otras funciones de la clase.
+
+self::$conn, por otro lado, es una propiedad estática de la clase, lo que significa que puede ser accedida desde cualquier método estático de la clase utilizando 
+la sintaxis self::$conn. Al definir $conn como una propiedad de la clase, se garantiza que está disponible en todas las funciones de la clase.
+
+En resumen, self::$conn se utiliza para acceder a la propiedad estática $conn desde la función configuracionLinea().
+
+TABLAS HTML
+En documentos HTML una tabla puede ser considerada, resumidamente, como un grupo de filas donde cada una contiene a un grupo de celdas. 
+Esto es conceptualmente distinto a un grupo de columnas que contiene a un grupo de filas, y esta diferencia tendrá un impacto en la composición 
+y comportamiento de la tabla.
+
+Como muchas otras estructuras de HTML, las tablas son construidas utilizando elementos. En particular, una tabla básica puede ser declarada usando tres elementos, 
+a saber, table (el contenedor principal), tr (representando a las filas contenedoras de las celdas) y td (representando a las celdas). 
+Dejémoslo más claro con un ejemplo:
+
+-> PHP
+
+El operador "->" se utiliza en PHP para acceder a propiedades y métodos de un objeto. Se utiliza después de un objeto para indicar que se va a acceder a una propiedad o método específico de ese objeto.

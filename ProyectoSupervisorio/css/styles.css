@@ -1,0 +1,9 @@
+body {
+    left: 50%;
+    top: 50%;
+  }
+  @media screen and (max-width: 600px) {
+    body {
+      width: fit-content!important;
+    }
+  }

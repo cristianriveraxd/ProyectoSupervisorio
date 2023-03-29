@@ -1,0 +1,38 @@
+QUERY'S
+
+Llamar configuración línea en orden ascendente x linea
+
+SELECT * FROM CONFIGURACION_LINEA ORDER BY LINEA ASC;
+
+
+Llamar rop productos
+SELECT CodigoBarras,TipoPasta,Referencia,Descripcion FROM RopProductos;
+
+Contar registros 
+SELECT COUNT(*) FROM
+
+SELECT CONFIGURACION_LINEA.LINEA, SUM(PALLETS_GENERADOS.NUM_PAQUETES) AS TOTAL_PAQUETES, COUNT(PALLETS_GENERADOS.ID) AS TOTAL_PALLET
+FROM CONFIGURACION_LINEA cl
+LEFT JOIN PALLET_GENERADOS pg ON cl.LINEA = pg.LINEA AND pg.FECHA_HORA_GENERACION >= cl.FECHA_HORA_INICIO
+GROUP BY cl.LINEA
+
+
+QUERY PROBADO PARA UNIR TABLAS
+SELECT 
+    cl.LINEA, 
+    COUNT( pg.LINEA_PALLETS) AS cantidad_pallets,
+    SUM(pg.NUM_PAQUETES) AS cantidad_paquetes
+FROM 
+    configuracion_linea cl
+    LEFT JOIN pallets_generados pg ON cl.LINEA = pg.LINEA_PALLETS
+WHERE 
+    pg.FECHA_HORA >= cl.FECHA_HORA_INICIO
+GROUP BY 
+    cl.LINEA;
+
+
+
+En esta consulta estamos haciendo un LEFT JOIN entre las dos tablas usando como clave la columna "maquina". 
+Luego, estamos filtrando los registros de "pallets_generados" usando la condición pg.fecha_generacion >= DATE_ADD(cl.fecha_inicio, INTERVAL 12 HOUR), 
+que nos permite obtener solo los registros de pallets generados después de que inició la producción 
+(sumando 12 horas para convertir la hora en formato 24 horas a formato 12 horas).
