@@ -17,16 +17,15 @@ INDEX-->
   <link rel="icon" href="img/logo.png">
   <title>Supervisorio Sistema de Paletizado - Doria</title>
   <!-- refrescar pagina -->
-  <meta http-equiv="refresh" content="10">
+  <meta http-equiv="refresh" content="10"> 
 </head>
 
 <body>
-
   <div class="container">
     <header class="d-flex flex-wrap justify-content-center p-0 m-0 border-bottom">
       <img class="d-flex align-items-center mx-auto" src="img/bambinodoria.png" alt="bambino doria" width="290" height="260">
       <div class="d-flex justify-content-center align-items-center flex-column">
-        <h1 class="text-center m-0 fw-bold">ASIGNACIÓN DE LINEAS SISTEMA DE <br>PALETIZADO DORIA</br></h1>
+        <h1 class="text-center fw-bold">ASIGNACIÓN DE LINEAS EN SISTEMA <br> DE PALETIZADO DORIA</br></h1>
         <!-- <div class="text-center mt-4">
           <ul class="nav">
             <li class="nav-item lead"><a href="#" class="nav-link">FAQs</a></li>
@@ -35,22 +34,20 @@ INDEX-->
         </div> -->
       </div>
     </header>
+    <div class="container">
+      <?php
+      include_once("conexion.php");
+      include_once("configuracionLineas.php");
+      Conexion::conexionBD();
+      Datos::obtencionCodigos();
+      ?>
+    </div>
   </div>
 
 
-  <!-- <h1 class="text-center">Asignación de lineas sistema de paletizado</h1> -->
 
   <div class="container">
-    <?php
-    include_once("conexion.php");
-    include_once("configuracionLineas.php");
-    Conexion::conexionBD();
-    Datos::obtencionCodigos();
-    ?>
-  </div>
-
-  <div class="container">
-    <footer class="py-3 my-5">
+    <footer class="py-3 my-3">
       <p class="text-center text-muted mb-0">&copy;<span id="currentYear"></span> Productos Alimenticios Doria</p>
       <p class="text-center text-muted mb-0">Pastas 4.0</p>
       <script>

@@ -13,7 +13,16 @@ class Datos
 
     static function obtencionCodigos()
     {
-        $testigo = false;
+        $k001 = 0;
+        $k002 = 0;
+        $k003 = 0;
+        $k004 = 0;
+        $flag = false;
+        $fl1=false;
+        $fl2=false;
+        $fl3=false;
+        $fl4=false;
+
         // En este código, estamos incluyendo el archivo conexion.php y 
         // luego llamando al método estático conexionBD() de la clase Conexion para establecer 
         // la conexión y almacenarla en la variable $conn.
@@ -25,8 +34,6 @@ class Datos
         $stmt1->execute();
         $resultConfLin = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
-        //$datos = array_combine($resultConfLin,$resultEst);
-
         //Estamento para sumatoria de pallets
         $stmt2 = $conn->prepare("SELECT 
         cl.LINEA, 
@@ -35,12 +42,39 @@ class Datos
         $stmt2->execute();
         $resultCantPallets = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
+        //Estamento para control de rowspan con datos linea tiempo real
+        $stmt4 = $conn->prepare("SELECT LINEA, ESTADO FROM DATOS_LINEA_TIEMPO_REAL ORDER BY LINEA ASC;");
+        $stmt4->execute();
+        $resultEstLineas = $stmt4->fetchAll(PDO::FETCH_ASSOC);
+
+        //control de rowspan
+        foreach ($resultEstLineas as $line) {
+            //Estado. 1 producto asignado 2 libre.
+            $lineaAct = $line['ESTADO'];
+            $lineaPro = $line['LINEA'];
+            if ($lineaPro >= 1 && $lineaPro <= 3 && $lineaAct == 1) {
+                $k002++;
+            } else if ($lineaPro >= 4 && $lineaPro <= 6 && $lineaAct == 1) {
+                $k001++;
+            } else if ($lineaPro >= 7 && $lineaPro <= 9 && $lineaAct == 1) {
+                $k003++;
+            } else if ($lineaPro >= 10 && $lineaPro <= 12 && $lineaAct == 1) {
+                $k004++;
+            }
+        }
+        // echo $k001;
+        // echo $k002;
+        // echo $k003;
+        // echo $k004;
         //Titulos tabla
         echo "<table class ='table table-hover my-auto table-responsive'>";
-        echo "<tr><th colspan=7 class='text-center fs-3'>PASTA LARGA</th></tr>";
-        //echo "<caption>ASIGNACIÓN DE PRODUCTOS SISTEMA DE PALETIZADO</caption>";
-        echo 
-        "<tr>
+        //Control de asignación con valor de rowspan
+        if ($k001 > 1 || $k002 > 1) {
+            echo "<tr><th colspan=8 class='text-center fs-3'>PASTA LARGA</th></tr>";
+            //echo "<caption>ASIGNACIÓN DE PRODUCTOS SISTEMA DE PALETIZADO</caption>";
+            echo
+            "<tr>
+        <th scope='col'class= 'text-center align-middle p-2'>Robot</th>
         <th scope='col'class= 'text-center align-middle p-2'>Salida</th>
         <th scope='col'class= 'text-center align-middle p-2' >Máquina</th>
         <th scope='col'class= 'text-center align-middle p-2'>Referencia</th>
@@ -49,8 +83,9 @@ class Datos
         <th scope='col'class= 'text-center align-middle p-2'>Cant. pallets <br> generados</th>
         <th scope='col'class= 'text-center align-middle p-2'>Cant. fardos <br> generados</th>
         </tr>";
+        }
 
-        //logica para resultado de configuración de linea
+        //logica para resultado de configuración de linea.
         foreach ($resultConfLin as $confi) {
 
             //se procesa para separar el codigo de la maquina.
@@ -59,7 +94,7 @@ class Datos
             //se procesa para obtener la maquina
             $maquina = substr($confi['PRODUCTO'], 3, 1);
 
-            //almacenar hora de inicio
+            //almacenar hora y fecha de inicio
             $inicioFecha = substr($confi["FECHA_HORA_INICIO"], 0, 10);
             $inicioHora  = substr($confi["FECHA_HORA_INICIO"], 10, 9);
 
@@ -90,7 +125,7 @@ class Datos
                 $maquina = 'ENC';
             }
 
-            //se almacena línea y se da formato de lineas segun los robots
+            //se almacena línea y se da formato de lineas segun la visual de los robots
             $linea = $confi["LINEA"];
             if ($linea == 7) {
                 $linea = 11;
@@ -106,6 +141,18 @@ class Datos
                 $linea = 16;
             } else if ($linea == 8) {
                 $linea = 12;
+            }
+
+            //Configuración para imprimir el robot según la línea que recorra el foreach principal.
+            $robot;
+            if ($linea <= 3 && $linea >= 1) {
+                $robot = 'K002';
+            } else if ($linea >= 4 && $linea <= 6) {
+                $robot = 'K001';
+            } else if ($linea >= 11 && $linea < 13) {
+                $robot = 'K003';
+            } else if ($linea >= 14) {
+                $robot = 'K004';
             }
 
             //logica almacenado de datos sumatoria de pallets
@@ -139,7 +186,7 @@ class Datos
                 }
             }
 
-            //se obtiene la información de producto según lo programado
+            //se obtiene la información de producto según lo programado, esto para imprimir la información segun codigo.
             $stmt3 = $conn->prepare("SELECT * FROM RopProductos WHERE CodigoBarras = $codigo;");
             $stmt3->execute();
             $resultRopProd = $stmt3->fetchAll(PDO::FETCH_ASSOC);
@@ -150,6 +197,25 @@ class Datos
                 $tipoPasta = $fila["TipoPasta"];
                 if ($tipoPasta != 'Corta') {
                     echo "<tr>";
+                    if ($linea == 1 && $fl2 == false) {
+                        echo "<td rowspan=" . $k002 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl2=true;
+                    }else if($linea == 2 && $fl2 == false){
+                        echo "<td rowspan=" . $k002 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl2=true;
+                    }else if($linea == 3 && $fl2 == false){
+                        echo "<td rowspan=" . $k002 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl2=true;
+                    }else if($linea == 4 && $fl1 == false){
+                        echo "<td rowspan=" . $k001 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl1=true;
+                    }else if($linea == 5 && $fl1 == false){
+                        echo "<td rowspan=" . $k001 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl1=true;
+                    }else if($linea == 6 && $fl1 == false){
+                        echo "<td rowspan=" . $k001 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl1=true;
+                    }
                     echo "<td class= 'text-center align-middle'>" . $linea . "</td>";
                     echo "<td class= 'text-center align-middle'>" . $maquina . "</td>";
                     echo "<td class= 'text-center align-middle'>" . $fila['Referencia'] . "</td>";
@@ -159,34 +225,47 @@ class Datos
                     echo "<td class= 'text-center align-middle'>" . $totalFardos . "</td>";
                     echo "</tr>";
                 }
+
                 //se imprime encabezado de PC. Es necesario imprimir de nuevo, ya que el sistema cuenta como si hubiera
                 // impreso la maquina 11
-                else if ($tipoPasta == 'Corta' && $testigo == false) {
-                    echo "</table>";
-                    echo "<table class ='table table-hover my-auto table-responsive'>";
-                    echo "<tr><th colspan=7 class='text-center fs-3'>PASTA CORTA</th></tr>";
-                    echo 
-                    "<tr>
-                    <th scope='col'class= 'text-center align-middle p-2'>Salida</th>
-                    <th scope='col'class= 'text-center align-middle p-2' >Máquina</th>
-                    <th scope='col'class= 'text-center align-middle p-2'>Referencia</th>
-                    <th scope='col'class= 'text-center align-middle p-2'>Descripción</th>
-                    <th scope='col'class= 'text-center align-middle p-2''>Inicio <br> producción</th>
-                    <th scope='col'class= 'text-center align-middle p-2'>Cant. pallets <br> generados</th>
-                    <th scope='col'class= 'text-center align-middle p-2'>Cant. fardos <br> generados</th>
-                    </tr>";
-                    echo "<tr>";
-                    echo "<td class= 'text-center align-middle'>" . $linea . "</td>";
-                    echo "<td class= 'text-center align-middle'>" . $maquina . "</td>";
-                    echo "<td class= 'text-center align-middle'>" . $fila['Referencia'] . "</td>";
-                    echo "<td class= 'text-center align-middle'>" . $fila["Descripcion"] . "</td>";
-                    echo "<td class= 'text-center align-middle'>" . $inicioFecha . " - " . $inicioHora . "</td>";
-                    echo "<td class= 'text-center align-middle'>" . $totalPallets . "</td>";
-                    echo "<td class= 'text-center align-middle'>" . $totalFardos . "</td>";
-                    echo "</tr>";
-                    $testigo = true;
+                else if ($tipoPasta == 'Corta' && $flag == false) {
+                    if ($k003 > 1 || $k004 > 1) {
+                        echo "<tr><th colspan=8 class='text-center fs-3'>PASTA CORTA</th></tr>";
+                        echo
+                        "<tr>
+                        <th scope='col'class= 'text-center align-middle p-2'>Robot</th>
+                        <th scope='col'class= 'text-center align-middle p-2'>Salida</th>
+                        <th scope='col'class= 'text-center align-middle p-2' >Máquina</th>
+                        <th scope='col'class= 'text-center align-middle p-2'>Referencia</th>
+                        <th scope='col'class= 'text-center align-middle p-2'>Descripción</th>
+                        <th scope='col'class= 'text-center align-middle p-2''>Inicio <br> producción</th>
+                        <th scope='col'class= 'text-center align-middle p-2'>Cant. pallets <br> generados</th>
+                        <th scope='col'class= 'text-center align-middle p-2'>Cant. fardos <br> generados</th>
+                        </tr>";
+                        echo "<tr>";
+                        echo "<td rowspan=" . $k003 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        echo "<td class= 'text-center align-middle'>" . $linea . "</td>";
+                        echo "<td class= 'text-center align-middle'>" . $maquina . "</td>";
+                        echo "<td class= 'text-center align-middle'>" . $fila['Referencia'] . "</td>";
+                        echo "<td class= 'text-center align-middle'>" . $fila["Descripcion"] . "</td>";
+                        echo "<td class= 'text-center align-middle'>" . $inicioFecha . " - " . $inicioHora . "</td>";
+                        echo "<td class= 'text-center align-middle'>" . $totalPallets . "</td>";
+                        echo "<td class= 'text-center align-middle'>" . $totalFardos . "</td>";
+                        echo "</tr>";
+                        $flag = true;
+                    }
                 } else {
                     echo "<tr>";
+                    if ($linea == 14 && $fl4 == false) {
+                        echo "<td rowspan=" . $k004 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl4=true;
+                    }else if($linea == 15 && $fl4 == false){
+                        echo "<td rowspan=" . $k004 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl4=true;
+                    }else if($linea == 16 && $fl4 == false){
+                        echo "<td rowspan=" . $k004 . " class= 'text-center align-middle'>" . $robot . "</td>";
+                        $fl4=true;
+                    }
                     echo "<td class= 'text-center align-middle'>" . $linea . "</td>";
                     echo "<td class= 'text-center align-middle'>" . $maquina . "</td>";
                     echo "<td class= 'text-center align-middle'>" . $fila['Referencia'] . "</td>";
